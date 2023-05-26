@@ -50,3 +50,7 @@
 <p>A configuração do servidor HTTP Nginx e do dservidor PHP estão dentro do diretório docker_components, caso necessite de alguma configuração extra </p>
 <p>Tem uma interface grafica para visualização , e também tem a API com autenticação por JWT Bearer</p>
 <p>Os menus criados são apenas para testes, não tem funcionalidades </p>
+
+##Usuario Supremo inicial
+<p>Email: senhor_das_galaxias@nasa.org</p>
+<p>Senha: senhordasgalaxias123</p>
