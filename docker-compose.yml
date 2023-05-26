@@ -1,0 +1,65 @@
+version: '3'
+services:
+  
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: digitalocean.com/php
+    container_name: api_usuarios
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: api_frc_system
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+       - ./:/var/www # Aponta pasta rais da aplicação, para /var/www dentro do container
+       - ./docker_components/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - backend-api
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      # - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./docker_components/http/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - backend-api
+
+  #MySQL/MariaDb Service
+  db:
+    image: mariadb:10.11.2
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: api_usuarios
+      MYSQL_ROOT_PASSWORD: fer270587
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mariadb
+    volumes:
+      # - dbdata:/var/lib/mysql # Persiste o conteudo em uma pasta dentro do container
+      - ./docker_components/db/sql:/var/lib/mysql # Persiste o conteudo em uma pasta dentro de container docker_components/db/sql
+      - ./docker_components/db/mariadb/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - backend-api
+
+#Docker Networks
+networks:
+  backend-api:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local
